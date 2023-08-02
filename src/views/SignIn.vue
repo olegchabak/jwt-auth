@@ -6,7 +6,9 @@ import {onUnmounted, ref} from "vue";
 import { useAuthStore } from "@/stores/auth"
 import {storeToRefs} from "pinia";
 import VLoader from "@/components/VLoader.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter()
 const email = ref('test@test.ru')
 const password = ref('123456')
 const authStore = useAuthStore()
@@ -17,13 +19,14 @@ const handleClick = async () => {
     email: email.value,
     password: password.value
   }
-  await auth(payload, 'signup')
+  await auth(payload, 'signin')
+  router.push({name: 'Cars'})
 }
 onUnmounted(clearError)
 </script>
 
 <template>
-  <h1>Sign Up</h1>
+  <h1>Sign In</h1>
   <Message v-if="error" severity="info">{{error}}</Message>
   <form class="flex flex-column gap-3">
     <div class="p-inputgroup flex-1">
@@ -42,8 +45,8 @@ onUnmounted(clearError)
       <VLoader v-if="loading"/>
       <Button v-else label="Submit" @click="handleClick"/>
       <span>
-        Are you already registered?
-        <router-link to="/sign-in">Sign in</router-link>
+        Are you not registered yet?
+        <router-link to="/sign-up">Sign up</router-link>
       </span>
     </div>
   </form>

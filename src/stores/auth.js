@@ -1,9 +1,9 @@
 import {computed, ref} from 'vue'
 import { defineStore } from 'pinia'
 import axios from "axios";
-import {signupErrorParser} from "@/helpers/auth";
+import { authErrorParser } from "@/helpers/auth";
 
-const API_KEY = import.meta.env.VITE_API_KEY
+const API_KEY = import.meta.env.VITE_API_KEY_FIREBASE
 
 export const useAuthStore = defineStore('auth', () => {
   const userInfo = ref({
@@ -11,17 +11,22 @@ export const useAuthStore = defineStore('auth', () => {
     email: null,
     userId: null,
     refreshToken: null,
-    expiresIn: null
+    expiresIn: null,
+    registered: null
   })
   const error = ref(null)
   const loading = ref(false)
   const isAuthorized = computed(() => !!(userInfo.value.email && userInfo.value.userId))
-  const signup = async (payload) => {
+  const clearError = () => {
+    error.value = null
+  }
+  const auth = async (payload, type) => {
+    const strUrl = type === 'signup' ? 'signUp' : 'signInWithPassword'
     error.value = null
     loading.value = true
     try {
       const response = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:${strUrl}?key=${API_KEY}`,
           { ...payload, returnSecureToken: true }
       )
       userInfo.value = {
@@ -29,14 +34,17 @@ export const useAuthStore = defineStore('auth', () => {
         email: response.data.email,
         userId: response.data.localId,
         refreshToken: response.data.refreshToken,
-        expiresIn: response.data.expiresIn
+        expiresIn: response.data.expiresIn,
+        registered: response.data.registered || 'xz',
+        displayName: response.data.displayName ?? 'xz'
       }
     } catch (err) {
       console.error(err)
-      error.value = signupErrorParser(err.response.data.error.message)
+      error.value = authErrorParser(err.response.data.error.message)
+      throw new Error(error.value)
     } finally {
       loading.value = false
     }
   }
-  return { userInfo, error, loading, isAuthorized, signup }
+  return { userInfo, error, loading, isAuthorized, auth, clearError }
 })
