@@ -2,9 +2,9 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
-import {onUnmounted, ref} from "vue";
+import { onUnmounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth"
-import {storeToRefs} from "pinia";
+import { storeToRefs } from "pinia";
 import VLoader from "@/components/VLoader.vue";
 import { useRouter } from "vue-router";
 
@@ -20,14 +20,14 @@ const handleClick = async () => {
     password: password.value
   }
   await auth(payload, 'signin')
-  router.push({name: 'Cars'})
+  router.push({ name: 'CarsView' })
 }
 onUnmounted(clearError)
 </script>
 
 <template>
   <h1>Sign In</h1>
-  <Message v-if="error" severity="info">{{error}}</Message>
+  <Message v-if="error" severity="info">{{ error }}</Message>
   <form class="flex flex-column gap-3">
     <div class="p-inputgroup flex-1">
       <span class="p-inputgroup-addon">

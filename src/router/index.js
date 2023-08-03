@@ -2,14 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import SignUp from '@/views/SignUp.vue'
 import SignIn from '@/views/SignIn.vue'
-import Cars from '@/views/Cars.vue'
+import CarsView from '@/views/CarsView.vue'
+import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'HomeView',
       component: HomeView
     },
     {
@@ -24,8 +25,12 @@ const router = createRouter({
     },
     {
       path: '/cars',
-      name: 'Cars',
-      component: Cars
+      name: 'CarsView',
+      component: CarsView,
+      beforeEnter: () => {
+        const authStore = useAuthStore()
+        if (!authStore.isAuthorized) return { name: 'SignIn' }
+      }
     }
   ]
 })

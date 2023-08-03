@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import axios from "axios";
 import { authErrorParser } from "@/helpers/auth";
 
-const API_KEY = import.meta.env.VITE_API_KEY_FIREBASE
+const API_KEY_FIREBASE = import.meta.env.VITE_FIREBASE_API_KEY
 
 export const useAuthStore = defineStore('auth', () => {
   const userInfo = ref({
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     try {
       const response = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:${strUrl}?key=${API_KEY}`,
+          `https://identitytoolkit.googleapis.com/v1/accounts:${strUrl}?key=${API_KEY_FIREBASE}`,
           { ...payload, returnSecureToken: true }
       )
       userInfo.value = {

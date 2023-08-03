@@ -1,11 +1,9 @@
 <script setup>
-import Button from 'primevue/button';
-
 </script>
 
 <template>
   <main>
-    <p>Hello world!</p>
-    <Button label="Жмяк для авторизации" @click="$router.push({ name: 'SignUp' })"/>
+    <h1>Home page</h1>
+    <router-link to="/sign-in">Sign in</router-link>
   </main>
 </template>
