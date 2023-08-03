@@ -21,18 +21,29 @@ const router = createRouter({
     {
       path: '/sign-in',
       name: 'SignIn',
-      component: SignIn
+      component: SignIn,
+      beforeEnter: (to) => {
+        const authStore = useAuthStore()
+        if (!to.meta.needAuth && authStore.token) {
+        return { name: 'CarsView' }
+      }
+      }
     },
     {
       path: '/cars',
       name: 'CarsView',
       component: CarsView,
-      beforeEnter: () => {
-        const authStore = useAuthStore()
-        if (!authStore.isAuthorized) return { name: 'SignIn' }
+      meta: {
+        needAuth: true
       }
     }
   ]
+})
+router.beforeEach((to) => {
+  const authStore = useAuthStore()
+  if (to.meta.needAuth && !authStore.token) {
+    return { name: 'SignIn' }
+  }
 })
 
 export default router
